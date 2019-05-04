@@ -1,0 +1,5 @@
+{
+  "file_path": "Path to log folder/ file. string",
+  "log_file_size": "Log file size. Accept masks like 10GB or pure number. int or string",
+  "archive": "Should rotated files be archived. Boolean true/false"
+}

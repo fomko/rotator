@@ -1,0 +1,6 @@
+test
+venv
+log.txt
+params.json
+.idea
+__pycache__
