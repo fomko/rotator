@@ -12,7 +12,4 @@ Log rotate utility for log rotation.
 - RotatedFileSize(int, string) - File size for each rotated file. 
   Can be like 13GB(MB/KB) or pure integer 
 - NeedToBeArchived (boolean) - Specify if rotated files need to be archived.
-- LoggingLevel (string) - Specify logging level. By default it's warning.
-    
-    Possible levels: DEBUG/INFO/WARNING/ERROR/CRITICAL
 
