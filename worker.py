@@ -1,17 +1,25 @@
 import shutil
 import gzip
-import logging
 import os
+import re
+from logger import logger
 
 
-def rotate_file(file_path, dest_file_size, is_archived=False):
-    if dest_file_size < 1024*1024:
-        buffer_size = dest_file_size
+def rotate_file(input_file,
+                output_folder,
+                rotated_file_size,
+                need_to_be_archived=False):
+
+    if rotated_file_size < 1024*1024:
+        buffer_size = rotated_file_size
     else:
         buffer_size = 1024*1024
     chunk = str()  # initial chunk
-    writer = Writer("test/log", dest_file_size)
-    with open(file_path, 'r') as fr:
+    output_pattern = re.split("\.(\d|\w)+$", input_file)[0]
+    writer = Writer(output_pattern,
+                    output_folder,
+                    rotated_file_size)
+    with open(input_file, 'r') as fr:
         while True:
             string_buffer = fr.readline()
             if string_buffer:
@@ -19,12 +27,15 @@ def rotate_file(file_path, dest_file_size, is_archived=False):
                 if chunk_len < buffer_size:
                     chunk += string_buffer
                 else:
-                    logger.debug("Chunk size = {}. Writing it in file".format(chunk_len))
-                    writer.add_to_file(chunk, is_archived)
+                    logger.debug("Chunk size = {}. "
+                                 "Writing it in file".format(chunk_len))
+                    writer.add_to_file(chunk, need_to_be_archived)
                     chunk = ""
             else:
-                logger.debug("Chunk size = {}. Writing it in file. It's a last string!".format(chunk_len))
-                writer.add_to_file(chunk, is_archived, last=True)
+                logger.debug("Chunk size = {}. "
+                             "Writing it in file. "
+                             "It's a last string!".format(chunk_len))
+                writer.add_to_file(chunk, need_to_be_archived, last=True)
                 break
 
 
@@ -32,31 +43,44 @@ class Writer:
     log_number = 1
     current_file_size = 0
 
-    def __init__(self, file_name_pattern, file_size):
+    def __init__(self, file_name_pattern, output_folder, file_size):
         self.log_name_pattern = file_name_pattern
         self.file_size = file_size
+        self.output_folder = output_folder
         logger.debug("file_size = {}".format(self.file_size))
+        check_and_create_output_folder(self.output_folder)
 
     @property
-    def log_name(self):
-        return "{}{}.log".format(self.log_name_pattern, self.log_number)
+    def log_path(self):
+        return "{}/{}_{}.log".format(self.output_folder,
+                                     self.log_name_pattern,
+                                     self.log_number)
+
+    @property
+    def archive_path(self):
+        return "{}/{}_{}.gz".format(self.output_folder,
+                                    self.log_name_pattern,
+                                    self.log_number)
 
     def add_to_file(self, content, archived=False, last=False):
         content_len = len(content)
         self.current_file_size += content_len
         logger.debug("current_file_size = {}".format(self.current_file_size))
         if self.current_file_size > self.file_size:
-            write_to_file(self.log_name, content)
+            write_to_file(self.log_path, content)
             if archived:
-                archive_file(self.log_name, "test/archive{}.gz".format(self.log_number))
+                archive_file(self.log_path, self.archive_path)
             self.log_number += 1
             self.current_file_size = 0
-
         else:
-            write_to_file(self.log_name, content)
+            write_to_file(self.log_path, content)
             if last:
-                archive_file(self.log_name, "test/archive{}.gz".format(self.log_number))
+                archive_file(self.log_path, self.archive_path)
 
+
+def check_and_create_output_folder(output_folder):
+    if not os.path.exists(output_folder):
+        os.mkdir(output_folder)
 
 
 def write_to_file(file_path, content):
@@ -72,9 +96,3 @@ def archive_file(source_file_path, archived_file_path):
     os.remove(source_file_path)
 
 
-logger = logging.getLogger(__name__)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
-logger.setLevel(logging.DEBUG)
