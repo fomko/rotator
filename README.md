@@ -1,12 +1,12 @@
-## Rotator 
+# Rotator 
 Log rotate utility for log rotation.
 
-# How to use?
+## How to use?
  python rotator.py [path to json with params]
  
  You can see json with params example in `example_params.json`
  
-# Params:
+### Params:
 - Input(string) - Source folder or file 
 - Output(string) - Folder where rotated files would be.
 - RotatedFileSize(int, string) - File size for each rotated file. 
