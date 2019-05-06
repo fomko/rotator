@@ -13,8 +13,8 @@ Log rotate utility for log rotation.
 - Input(string) - Source folder or file 
 - Output(string) - Folder where rotated files would be.
 - RotatedFileSize(int, string) - File size for each rotated file. 
-  Can be like 13GB(MB/KB) or pure integer 
-- NeedToBeArchived (boolean) - Specify if rotated files need to be archived.
+  Can be like 13GB(MB/KB) or a pure integer 
+- NeedToBeArchived (boolean) - Specify if rotated files need to be archived.  By default False
 
 
 ## ToDo:
