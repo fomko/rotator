@@ -65,5 +65,18 @@ def arg_parser(args):
     for arg in args:
         if ".json" in arg:
             return arg
-    print('helper is here!')
+    print('''
+    invalid params! 
+    
+    Example: 
+        python rotator.py param.json
+         
+    You should pass path to json config file with specified params:
+        Input(string) - Source folder or file
+        Output(string) - Folder where rotated files would be.
+        RotatedFileSize(int, string) - File size for each rotated file. Can be like 13GB(MB/KB) or a pure integer
+        NeedToBeArchived (boolean) - Specify if rotated files need to be archived. By default False
+    
+    '''
+          )
     sys.exit()
