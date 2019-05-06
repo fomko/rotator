@@ -1,7 +1,6 @@
 import shutil
 import gzip
 import os
-import re
 from logger import logger
 
 
@@ -95,3 +94,11 @@ def archive_file(source_file_path, archived_file_path):
             shutil.copyfileobj(source_file, archived_file)
     logger.debug(f'Deleting {source_file_path}')
     os.remove(source_file_path)
+
+
+def recreate_file(file_path):
+    new_file_path = file_path + '_tr'
+    os.rename(file_path, new_file_path)
+    with open(file_path, 'x'):
+        logger.debug("Recreating original file")
+        return new_file_path
