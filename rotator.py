@@ -1,5 +1,6 @@
 import worker
-from checker import *
+import sys
+from checker import arg_parser, param_checker
 from logger import logger
 
 
@@ -11,7 +12,7 @@ def main(argv):
     rotated_file_size = param_dict["rotated_file_size"]
     need_to_be_archived = param_dict["need_to_be_archived"]
     for input_file in input_files:
-        logger.info("Rotating file {}".format(input_file))
+        logger.info(f'Rotating file {input_file}')
         worker.rotate_file(input_file,
                            output_folder,
                            rotated_file_size,

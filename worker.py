@@ -14,8 +14,8 @@ def rotate_file(input_file_path,
         buffer_size = rotated_file_size
     else:
         buffer_size = 1024*1024
-    logger.debug("buffer_size = {}".format(buffer_size))
-    chunk = str()  # initial chunk
+    logger.debug(f'buffer_size = {buffer_size}')
+    chunk = ''  # initial chunk
     input_file_name = os.path.basename(input_file_path)
     output_pattern = os.path.splitext(input_file_name)[0]
     writer = Writer(output_pattern,
@@ -29,13 +29,11 @@ def rotate_file(input_file_path,
                 if chunk_len < buffer_size:
                     chunk += string_buffer
                 else:
-                    logger.debug("Chunk size = {}. "
-                                 "Writing it in file".format(chunk_len))
+                    logger.debug(f'Chunk size = {chunk_len}. Writing it in file.')
                     writer.add_to_file(chunk, need_to_be_archived)
-                    chunk = ""
+                    chunk = ''
             else:
-                logger.debug("Chunk size = {}. "
-                             "Writing it in file.".format(chunk_len))
+                logger.debug(f'Chunk size = {chunk_len}. Writing it in file.')
                 writer.add_to_file(chunk, need_to_be_archived, last=True)
                 break
 
@@ -52,17 +50,13 @@ class Writer:
 
     @property
     def log_path(self):
-        filename = "{}_{}.log".format(self.log_name_pattern,
-                                      self.log_number)
-        return os.path.join(self.output_folder,
-                            filename)
+        filename = f'{self.log_name_pattern}_{self.log_number}.log'
+        return os.path.join(self.output_folder, filename)
 
     @property
     def archive_path(self):
-        filename = "{}_{}.gz".format(self.archive_path,
-                                     self.log_number)
-        return os.path.join(self.output_folder,
-                            filename)
+        filename = f'{self.archive_path}_{self.log_number}.gz'
+        return os.path.join(self.output_folder, filename)
 
     def add_to_file(self, content, archived=False, last=False):
         content_len = len(content)
@@ -81,27 +75,23 @@ class Writer:
 
 def check_and_create_output_folder(output_folder):
     if not os.path.exists(output_folder):
-        logger.info("Output folder {} doesn't exist. "
-                    "Creating...".format(output_folder))
+        logger.info(f"Output folder {output_folder} doesn't exist. Creating...")
         os.mkdir(output_folder)
     else:
-        logger.debug("Output folder already exist.")
+        logger.debug('Output folder already exist.')
 
 
 def write_to_file(file_path, content):
     with open(file_path, 'a') as fw:
-        logger.debug('Writing in file: {} '.format(file_path))
+        logger.debug(f'Writing in file: {file_path}')
         fw.write(content)
 
 
 def archive_file(source_file_path, archived_file_path):
-    logger.debug("Archiving file {} to {}".format(source_file_path,
-                                                  archived_file_path))
+    logger.debug(f'Archiving file {source_file_path} to {archived_file_path}')
     with open(source_file_path, 'rb') as source_file:
         with gzip.open(archived_file_path, 'wb') as archived_file:
-            logger.debug("Creating archive {}".format(archived_file_path))
+            logger.debug(f'Creating archive {archived_file_path}')
             shutil.copyfileobj(source_file, archived_file)
-    logger.debug("Deleting {}".format(source_file_path))
+    logger.debug(f'Deleting {source_file_path}')
     os.remove(source_file_path)
-
-
