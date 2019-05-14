@@ -10,7 +10,7 @@ Log rotate utility for log rotation.
  You can see params example config in `example_params.json`
  
 ### Params:
-- Input(string) - Source folder or file 
+- Input(string) - Source folder or file. Mind that Windows path requires double slash  `C://like//this`
 - Output(string) - Folder where rotated files would be.
 - RotatedFileSize(int, string) - File size for each rotated file. 
   Can be like 13GB(MB/KB) or a pure integer 

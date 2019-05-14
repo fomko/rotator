@@ -12,8 +12,10 @@ def param_checker(param_json_path):
             param_json = json.load(jr)
     except FileNotFoundError:
         logger.error("No file with params has been found.")
+        sys.exit(1)
     except ValueError:
         logger.error("Invalid Json file!")
+        sys.exit(1)
     param = {}
     param["input_files"] = check_input_param(param_json["Input"])
     logger.debug(f'Input files param: {param["input_files"]}')
@@ -67,7 +69,7 @@ def arg_parser(args):
             return arg
     print('''
     invalid params! 
-    
+
     Example: 
         python rotator.py param.json
          
