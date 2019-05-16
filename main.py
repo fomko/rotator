@@ -1,13 +1,14 @@
-import worker
 import os
-import sys
-from checker import arg_parser, param_checker
-from logger import logger
 import logging
+from logger import logger
+import worker
+from checker import args_parsing, param_checker
 
 
-def main(argv):
-    param_json = arg_parser(argv)
+
+
+def main():
+    param_json = args_parsing()["config"]
     param_dict = param_checker(param_json)
     input_files = param_dict["input_files"]
     output_folder = param_dict["output_folder"]
@@ -27,4 +28,5 @@ def main(argv):
 if __name__ == '__main__':
     # Define logging level here. Will be moved in config file some day!
     logger.setLevel(logging.INFO)
-    main(sys.argv[1:])
+    main()
+

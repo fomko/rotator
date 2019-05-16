@@ -1,7 +1,8 @@
 import json
 import os
-from convertor import convert_size_to_bytes
 import sys
+import re
+import argparse
 from logger import logger
 
 
@@ -19,12 +20,16 @@ def param_checker(param_json_path):
     param = {}
     param["input_files"] = check_input_param(param_json["Input"])
     logger.debug(f'Input files param: {param["input_files"]}')
+
     param["output_folder"] = check_output_param(param_json["Output"])
     logger.debug(f'Output folder param: {param["output_folder"]}')
+
     param["rotated_file_size"] = check_rotated_file_size_param(param_json["RotatedFileSize"])
     logger.debug(f'Rotated file size param: {param["rotated_file_size"]}')
+
     need_to_be_archived = param_json.get("NeedToBeArchived")
     param["need_to_be_archived"] = need_to_be_archived or False
+
     logger.debug(f'Need to be archived param: {param["need_to_be_archived"]}"')
     if param["input_files"] and param["output_folder"] and param["rotated_file_size"]:
         return param
@@ -63,22 +68,21 @@ def check_rotated_file_size_param(file_size):
         sys.exit(1)
 
 
-def arg_parser(args):
-    for arg in args:
-        if ".json" in arg:
-            return arg
-    print('''
-    invalid params! 
+def convert_size_to_bytes(size):
+    suffixes = "", "k", "m", "g", "t"
+    multipliers = {f'{l}b': 1024 ** i for i, l in enumerate(suffixes)}
+    sre = re.compile("(\d+)({})".format("|".join(x + "b" for x in suffixes)), re.IGNORECASE)
 
-    Example: 
-        python rotator.py param.json
-         
-    You should pass path to json config file with specified params:
-        Input(string) - Source folder or file
-        Output(string) - Folder where rotated files would be.
-        RotatedFileSize(int, string) - File size for each rotated file. Can be like 13GB(MB/KB) or a pure integer
-        NeedToBeArchived (boolean) - Specify if rotated files need to be archived. By default False
-    
-    '''
-          )
-    sys.exit()
+    def subfunc(m):
+        return str(int(m.group(1)) * multipliers[m.group(2).lower()])
+
+    return sre.sub(subfunc, size)
+
+
+def args_parsing():
+    args_parser = argparse.ArgumentParser(description='Rotator rotates files!')
+    args_parser.add_argument('-c', '--config', type=str, metavar='',
+                             required=True, help='Path to json with params')
+    args = args_parser.parse_args()
+
+    return vars(args)
