@@ -8,12 +8,6 @@ from unittest.mock import patch
 
 class TestChecker(unittest.TestCase):
 
-    def test_arg_parser(self):
-        valid_args = {"test.json"}
-        invalid_args = {"invalid!"}
-        self.assertEqual(arg_parser(valid_args), "test.json")
-        self.assertRaises(SystemExit, arg_parser, invalid_args)
-
     def test_check_rotated_file_size_param(self):
         valid_str_file_size = "10GB"
         invalid_str_file_size = "10DD"
