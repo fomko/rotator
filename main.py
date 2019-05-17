@@ -1,10 +1,17 @@
 import os
 import logging
-from logger import logger
 import worker
 from checker import args_parsing, param_checker
 
 
+def logger_initializing(logging_level):
+    _logger = logging.getLogger("rotator")
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    _logger.addHandler(stream_handler)
+    _logger.setLevel(getattr(logging, logging_level))
+    return _logger
 
 
 def main():
@@ -27,6 +34,6 @@ def main():
 
 if __name__ == '__main__':
     # Define logging level here. Will be moved in config file some day!
-    logger.setLevel(logging.INFO)
+    logger = logger_initializing("DEBUG")
     main()
 

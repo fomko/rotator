@@ -3,7 +3,10 @@ import os
 import sys
 import re
 import argparse
-from logger import logger
+import logging
+
+
+logger = logging.getLogger("rotator.ckecker")
 
 
 def param_checker(param_json_path):

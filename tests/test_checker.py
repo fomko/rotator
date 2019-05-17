@@ -24,12 +24,6 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(check_rotated_file_size_param(valid_int_file_size), 10000)
         self.assertRaises(SystemExit, check_rotated_file_size_param, invalid_numeric_file_size)
 
-    def test_check_input_param(self):
-        # scenario 1: everything os ok!
-
-
-        pass
-
 
 if __name__ == '__main__':
     unittest.main()

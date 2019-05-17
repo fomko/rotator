@@ -1,7 +1,10 @@
 import shutil
 import gzip
 import os
-from logger import logger
+import logging
+
+
+logger = logging.getLogger("rotator.worker")
 
 
 def rotate_file(input_file_path,
@@ -13,7 +16,7 @@ def rotate_file(input_file_path,
         buffer_size = rotated_file_size
     else:
         buffer_size = 1024*1024
-    logger.debug(f'buffer_size = {buffer_size}')
+    logger.info(f'buffer_size = {buffer_size}')
     chunk = ''  # initial chunk
     input_file_name = os.path.basename(input_file_path)
     output_pattern = os.path.splitext(input_file_name)[0]
