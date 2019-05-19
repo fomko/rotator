@@ -4,3 +4,4 @@ log.txt
 params.json
 .idea
 __pycache__
+.vscode

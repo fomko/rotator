@@ -1,23 +1,36 @@
-import unittest
+import pytest
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from checker import *
-from unittest.mock import patch
+
+from checker import check_rotated_file_size_param
 
 
-class TestChecker(unittest.TestCase):
+@pytest.mark.parametrize('param', [
+    {   #param0
+        'file_size': "10GE"
+    },
+    {   #param1
+        'file_size': 10.12
+    }
+])
+def test_invalid_check_rotated_file_size_param(param):
+    file_size = param['file_size']
+    with pytest.raises(SystemExit):
+        check_rotated_file_size_param(file_size)
 
-    def test_check_rotated_file_size_param(self):
-        valid_str_file_size = "10GB"
-        invalid_str_file_size = "10DD"
-        valid_int_file_size = 10000
-        invalid_numeric_file_size = 10.25
-        self.assertEqual(check_rotated_file_size_param(valid_str_file_size), 10737418240)
-        self.assertRaises(SystemExit, check_rotated_file_size_param, invalid_str_file_size)
-        self.assertEqual(check_rotated_file_size_param(valid_int_file_size), 10000)
-        self.assertRaises(SystemExit, check_rotated_file_size_param, invalid_numeric_file_size)
 
-
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.parametrize("param", [
+    {   #param0
+        'file_size': "10MB",
+        'expected': 10485760
+    },
+    {   #param1
+        'file_size': 100000,
+        'expected': 100000
+    }
+])
+def test_valid_check_rotated_file_size_param(param):
+    file_size = param['file_size']
+    expected = param['expected']
+    assert check_rotated_file_size_param(file_size) == expected

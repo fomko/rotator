@@ -13,7 +13,7 @@ def rotate_file(input_file_path,
                 rotated_file_size,
                 need_to_be_archived=False):
 
-    buffer_size = 1000000
+    buffer_size = 100000
     chunk = ''  # initial chunk
     input_file_name = os.path.basename(input_file_path)
     output_pattern, output_ext = os.path.splitext(input_file_name)
@@ -101,7 +101,7 @@ def write_to_file(file_path, content):
             logger.debug(f'Writing in file: {file_path}')
             fw.write(content)
     except PermissionError as e:
-        logger.error(e, exc_info=True)
+        logger.error(f"Couldn't write to file {file_path}. Probably it's already in use. Error details: {e}")
         sys.exit(1)
 
 
