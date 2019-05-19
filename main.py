@@ -1,4 +1,3 @@
-import os
 import logging
 import worker
 from checker import args_parsing, param_checker

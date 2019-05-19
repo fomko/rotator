@@ -5,11 +5,16 @@ Log rotate utility for log rotation.
 -  Python 3.7 + 
 
 ## How to use?
- python main.py [path to config json with params]
- 
+ `python main.py -c [path to config json with params]`
+```
+Arguments:
+  -c , --config         Path to json with params
+  -l , --logginglevel   Logging Level. Can be
+                        DEBUG/INFO/WARNING/ERROR/CRITICAL
+``` 
  You can see params example config in `example_params.json`
  
-### Params:
+### Params in config file:
 - Input(string) - Source folder or file. Mind that Windows path requires double slash  `C://like//this`
 - Output(string) - Folder where rotated files would be.
 - RotatedFileSize(int, string) - File size for each rotated file. 

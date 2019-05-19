@@ -47,14 +47,23 @@ def check_input_param(path):
     if os.path.isdir(path):
         for root, dirs, files in os.walk(os.path.abspath(path)):
             for file in files:
-                files_list.append(os.path.join(root, file))
+                file_path = os.path.join(root, file)
+                if os.path.getsize(file_path) > 0:
+                    logger.debug(f"Adding file {file} to list for rotation")
+                    files_list.append(file_path)
+                else:
+                    logger.debug("File {} is empty. Skipping it")
+
     elif os.path.isfile(path):
         files_list = [os.path.abspath(path)]
     else:
         logger.error('Unsupported file type')
         sys.exit(1)
-
-    return files_list
+    if files_list:
+        return files_list
+    else:
+        logger.warning('No files for rotation has been found. Nothing to do')
+        sys.exit()
 
 
 def check_output_param(path):
@@ -86,6 +95,8 @@ def args_parsing():
     args_parser = argparse.ArgumentParser(description='Rotator rotates files!')
     args_parser.add_argument('-c', '--config', type=str, metavar='',
                              required=True, help='Path to json with params')
+    args_parser.add_argument('-l', '--logginglevel', type=str, metavar='',
+                             required=False, help='Logging Level. Can be DEBUG/INFO/WARNING/ERROR/CRITICAL')
     args = args_parser.parse_args()
 
     return vars(args)
