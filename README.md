@@ -5,7 +5,7 @@ Log rotate utility for log rotation.
 -  Python 3.7 + 
 
 ## How to use?
- python rotator.py [path to config json with params]
+ python main.py [path to config json with params]
  
  You can see params example config in `example_params.json`
  
@@ -21,5 +21,5 @@ Log rotate utility for log rotation.
 - :black_square_button: Make logs more informative!
 - :black_square_button: Add tests with unittest or pytest lib
 - :black_square_button: Add possibility to choose logging level in param config 
-- :black_square_button: Add multiprocessing in writting process. Should be much faster!
+- :black_square_button: Add multiprocessing in writing process. Should be much faster!
 

@@ -49,7 +49,7 @@ def check_input_param(path):
             for file in files:
                 files_list.append(os.path.join(root, file))
     elif os.path.isfile(path):
-        files_list = os.path.abspath(path)
+        files_list = [os.path.abspath(path)]
     else:
         logger.error('Unsupported file type')
         sys.exit(1)
