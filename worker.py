@@ -1,4 +1,5 @@
 import shutil
+import sys
 import gzip
 import os
 import logging
@@ -12,11 +13,7 @@ def rotate_file(input_file_path,
                 rotated_file_size,
                 need_to_be_archived=False):
 
-    if rotated_file_size < 1024*1024:
-        buffer_size = rotated_file_size
-    else:
-        buffer_size = 1024*1024
-    logger.info(f'buffer_size = {buffer_size}')
+    buffer_size = 1000000
     chunk = ''  # initial chunk
     input_file_name = os.path.basename(input_file_path)
     output_pattern = os.path.splitext(input_file_name)[0]
@@ -100,8 +97,24 @@ def archive_file(source_file_path, archived_file_path):
 
 
 def recreate_file(file_path):
-    new_file_path = file_path + '_tr'
-    os.rename(file_path, new_file_path)
-    with open(file_path, 'x'):
-        logger.debug("Recreating original file")
-        return new_file_path
+    num = 1
+    try:
+        while True:
+            new_file_path = file_path + num
+            if (os.path.exists(new_file_path)
+                    and os.stat(new_file_path).st_size != 0):
+                num += 1
+            elif os.stat(new_file_path).st_size == 0:
+                os.remove(new_file_path)
+                break
+            else:
+                break
+
+        os.rename(file_path, new_file_path)
+        with open(file_path, 'x'):
+            logger.debug("Recreating original file")
+    except OSError as e:
+        logger.error(f"Can not rename file. Error: {e}")
+        sys.exit(1)
+
+    return new_file_path

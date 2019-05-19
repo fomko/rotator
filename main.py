@@ -10,12 +10,18 @@ def logger_initializing(logging_level):
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
     _logger.addHandler(stream_handler)
-    _logger.setLevel(getattr(logging, logging_level))
+    _logger.setLevel(getattr(logging, logging_level.upper()))
     return _logger
 
 
 def main():
     param_json = args_parsing()["config"]
+    logging_level = args_parsing().get("logginglevel")
+    if logging_level:
+        logger = logger_initializing(logging_level)
+    else:
+        logger = logger_initializing("INFO")
+
     param_dict = param_checker(param_json)
     input_files = param_dict["input_files"]
     output_folder = param_dict["output_folder"]
@@ -33,7 +39,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # Define logging level here. Will be moved in config file some day!
-    logger = logger_initializing("DEBUG")
     main()
 
